@@ -1,0 +1,33 @@
+# /etc/conf.d/tenocoind: config file for /etc/init.d/tenocoind
+
+# Config file location
+#TENOCOIND_CONFIGFILE="/etc/tenocoin/tenocoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $TENOCOIND_USER)
+#TENOCOIND_PIDDIR="/var/run/tenocoind"
+
+# What filename to give the pidfile
+#TENOCOIND_PIDFILE="${TENOCOIND_PIDDIR}/tenocoind.pid"
+
+# Where to write tenocoind data (be mindful that the blockchain is large)
+#TENOCOIND_DATADIR="/var/lib/tenocoind"
+
+# User and group to own tenocoind process
+#TENOCOIND_USER="tenocoin"
+#TENOCOIND_GROUP="tenocoin"
+
+# Path to tenocoind executable
+#TENOCOIND_BIN="/usr/bin/tenocoind"
+
+# Nice value to run tenocoind under
+#TENOCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+TENOCOIND_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for tenocoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+TENOCOIND_SIGTERM_TIMEOUT=60

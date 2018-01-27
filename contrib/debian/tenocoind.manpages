@@ -1,0 +1,3 @@
+debian/manpages/tenocoind.1
+debian/manpages/tenocoin.conf.5
+debian/manpages/tenocoin-cli.1

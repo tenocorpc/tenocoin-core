@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  tenocoind The tenocoin core server.
+#
+#
+# chkconfig: 345 80 20
+# description: tenocoind
+# processname: tenocoind
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/tenocoind, see below
+if [ -f /etc/sysconfig/tenocoind ]; then
+        . /etc/sysconfig/tenocoind
+fi
+
+RETVAL=0
+
+prog=tenocoind
+# you can override the lockfile via TENOCOIND_LOCKFILE in /etc/sysconfig/tenocoind
+lockfile=${TENOCOIND_LOCKFILE-/var/lock/subsys/tenocoind}
+
+# tenocoind defaults to /usr/bin/tenocoind, override with TENOCOIND_BIN
+tenocoind=${TENOCOIND_BIN-/usr/bin/tenocoind}
+
+# tenocoind opts default to -disablewallet, override with TENOCOIND_OPTS
+tenocoind_opts=${TENOCOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $tenocoind $tenocoind_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

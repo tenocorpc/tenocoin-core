@@ -1,0 +1,8 @@
+/usr/bin/tenocoin-cli		--	gen_context(system_u:object_r:tenocoin_exec_t,s0)
+/usr/sbin/tenocoind		--	gen_context(system_u:object_r:tenocoin_exec_t,s0)
+/usr/lib(64)?/tenocoin/tenocoind		--	gen_context(system_u:object_r:tenocoin_exec_t,s0)
+
+/etc/tenocoin(/.*)?		gen_context(system_u:object_r:tenocoin_conf_t,s0)
+/var/lib/tenocoin(/.*)?		gen_context(system_u:object_r:tenocoin_var_lib_t,s0)
+
+(/var)?/run/tenocoind(/.*)?   gen_context(system_u:object_r:tenocoin_var_run_t,s0)

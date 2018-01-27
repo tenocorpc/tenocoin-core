@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/tenocoin/.tenocoin" ]; then
+	TENOCOIND_DEFAULT_DATADIR="/var/lib/tenocoin/.tenocoin"
+else
+	TENOCOIND_DEFAULT_DATADIR="/var/lib/tenocoind"
+fi
+
+TENOCOIND_CONFIGFILE=${TENOCOIND_CONFIGFILE:-/etc/tenocoin/tenocoin.conf}
+TENOCOIND_PIDDIR=${TENOCOIND_PIDDIR:-/var/run/tenocoind}
+TENOCOIND_PIDFILE=${TENOCOIND_PIDFILE:-${NAVCOIND_PIDDIR}/tenocoind.pid}
+TENOCOIND_DATADIR=${TENOCOIND_DATADIR:-${NAVCOIND_DEFAULT_DATADIR}}
+TENOCOIND_USER=${TENOCOIND_USER:-${NAVCOIN_USER:-tenocoin}}
+TENOCOIND_GROUP=${TENOCOIND_GROUP:-tenocoin}
+TENOCOIND_BIN=${TENOCOIND_BIN:-/usr/bin/tenocoind}
+TENOCOIND_NICE=${TENOCOIND_NICE:-${NICELEVEL:-0}}
+TENOCOIND_OPTS="${TENOCOIND_OPTS:-${NAVCOIN_OPTS}}"
+
+name="TenoCoin Core Daemon"
+description="TenoCoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/tenocoind"
+command_args="-pid=\"${TENOCOIND_PIDFILE}\" \
+		-conf=\"${TENOCOIND_CONFIGFILE}\" \
+		-datadir=\"${TENOCOIND_DATADIR}\" \
+		-daemon \
+		${TENOCOIND_OPTS}"
+
+required_files="${TENOCOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${TENOCOIND_USER} \
+			-N ${TENOCOIND_NICE} -w 2000"
+pidfile="${TENOCOIND_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${TENOCOIND_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${TENOCOIND_USER}:${TENOCOIND_GROUP}" \
+	"${TENOCOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${TENOCOIND_USER}:${TENOCOIND_GROUP}" \
+	"${TENOCOIND_PIDDIR}"
+
+	checkpath -f \
+	-o ${TENOCOIND_USER}:${TENOCOIND_GROUP} \
+	-m 0660 \
+	${TENOCOIND_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${TENOCOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run tenocoind."
+		eerror "The setting must appear in ${TENOCOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"TenoCoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

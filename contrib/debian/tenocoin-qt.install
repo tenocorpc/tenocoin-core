@@ -1,0 +1,6 @@
+usr/local/bin/tenocoin-qt usr/bin
+share/pixmaps/tenocoin32.xpm usr/share/pixmaps
+share/pixmaps/tenocoin16.xpm usr/share/pixmaps
+share/pixmaps/tenocoin128.png usr/share/pixmaps
+debian/tenocoin-qt.desktop usr/share/applications
+debian/tenocoin-qt.protocol usr/share/kde4/services/

@@ -1,0 +1,22 @@
+[Unit]
+Description=TenoCoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=tenocoin
+Group=tenocoin
+
+Type=forking
+PIDFile=/var/lib/tenocoind/tenocoind.pid
+ExecStart=/usr/bin/tenocoind -daemon -pid=/var/lib/tenocoind/tenocoind.pid \
+-conf=/etc/tenocoin/tenocoin.conf -datadir=/var/lib/tenocoind -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

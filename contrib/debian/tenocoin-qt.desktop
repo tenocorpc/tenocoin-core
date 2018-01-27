@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=TenoCoin
+Comment=TenoCoin P2P Cryptocurrency
+Comment[fr]=TenoCoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=TenoCoin, eşten eşe kriptografik sanal para birimi
+Exec=tenocoin-qt %u
+Terminal=false
+Type=Application
+Icon=tenocoin128
+MimeType=x-scheme-handler/tenocoin;
+Categories=Office;Finance;

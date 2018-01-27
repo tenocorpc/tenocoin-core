@@ -1,0 +1,5 @@
+Building TenoCoin
+
+See doc/build-*.md for instructions on building tenocoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of TenoCoin.
